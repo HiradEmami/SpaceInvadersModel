@@ -332,6 +332,7 @@ class Game:
             self.auto_shoot = False
         else:
             self.auto_shoot = True
+        
 
     def run(self):
         #   First create the Window
@@ -357,7 +358,7 @@ class Game:
         turtle.onkey(self.move_left_player, "Left")
         turtle.onkey(self.move_right_player, "Right")
         turtle.onkey(self.cheat_upgrade, "p")
-        turtle.onkey(self.auto_shoot,"o")
+        turtle.onkey(self.toggle_auto_shoot,"o")
         turtle.onkey(self.fire_bullet, "space")
         turtle.listen()
         counter = 0
@@ -398,7 +399,10 @@ class Game:
             if self.bullets[0].ycor() > 290:
 
                 self.arrange_bullets()
-                self.bullet_state = "ready"
+                if not self.auto_shoot:
+                    self.bullet_state = "ready"
+                else:
+                    self.bullet_state = "fire"
 
 
         turtle.mainloop()
