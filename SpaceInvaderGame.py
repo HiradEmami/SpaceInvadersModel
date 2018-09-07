@@ -23,17 +23,18 @@ class Game:
         # Player - Enemy Speed
         self.player_speed = 15 # Relatively fast
         self.minion_speed_x = 2 # Relatively slow
-        self.minion_speed_y = 10
-        self.bullet_speed = 20
+        self.minion_speed_y = 2
+        self.bullet_speed = 50
         self.minion_shape_size_x = 1
         self.minion_shape_size_y = 1
         # difficulty
         self.difficulty = argdifficulty
-        self.num_enemies = 20
-        self.num_batch = 5
+        self.num_enemies = 500
+        self.num_batch = 3
         self.num_bullets = 5
         self.player_hp = 5
         self.hit_threshold = 35
+        self.auto_shoot = False
         # Player Score
         self.score = 0
         # state-machines
@@ -53,6 +54,7 @@ class Game:
 
         # set the difficulty and the settings
         self.set_difficulty()
+        self.stop_timer = 100
 
     def set_difficulty(self):
         # add the most basic enemy type to the dictionary
@@ -103,7 +105,7 @@ class Game:
         self.score_pen.speed(0)
         self.score_pen.color("white")
         self.score_pen.penup()
-        self.score_pen.setposition(-290, 290)
+        self.score_pen.setposition(-280, 280)
         self.scorestring = "Score: %s" % self.score
         self.score_pen.write(self.scorestring, False, align="left", font=("Arial", 14, "normal"))
         self.score_pen.hideturtle()
@@ -124,7 +126,8 @@ class Game:
             self.upgrade_gun()
 
     def upgrade_gun(self):
-        self.bullet_speed += 5
+        self.bullet_speed += 1
+        self.hit_threshold += 25
         new_bullet = self.create_bullet()
         self.bullets.append(new_bullet)
         self.arrange_bullets()
@@ -134,6 +137,7 @@ class Game:
             self.bullet_state  = "fire"
             # reset the bullets
             self.arrange_bullets()
+            self.bullet_exit = False
 
 
     def arrange_bullets(self):
@@ -165,7 +169,7 @@ class Game:
             i.showturtle()
 
     def hit_target(self,argBullet, argEnemy):
-        distance = self.euclidean_distance(argBullet.xcor(),argEnemy.xcor(),
+        distance = self.euclidean_distance(self.player.xcor(),argEnemy.xcor(),
                                            argBullet.ycor(),argEnemy.ycor())
         print(distance)
         if distance < self.hit_threshold:
@@ -298,7 +302,7 @@ class Game:
             elif minion[1]==2:
                 minion[2]=self.move_set_two(minion[0],direction=minion[2])
             elif minion[1]==3:
-                self.move_set_three(minion[0])
+                minion[2] = self.move_set_two(minion[0], direction=minion[2])
 
     def generate_minion(self):
         selection = rd.randint(0,len(self.enemy_dic)-1)
@@ -321,11 +325,19 @@ class Game:
         for i in range(self.num_batch):
             minion = self.generate_minion()
             self.enemies.append(minion)
+        self.num_enemies -= self.num_batch
+
+    def toggle_auto_shoot(self):
+        if self.auto_shoot:
+            self.auto_shoot = False
+        else:
+            self.auto_shoot = True
 
     def run(self):
         #   First create the Window
         self.main_frame = turtle.Screen()
         self.main_frame.bgcolor(self.background_color)
+        self.main_frame.bgpic("spaceShip/backGround.gif")
         self.main_frame.title('Evil Geometry Invaders')
         self.main_frame.setup(width=1.0, height=1.0, startx=None, starty=None)
         #   Draw the Boarders
@@ -345,37 +357,48 @@ class Game:
         turtle.onkey(self.move_left_player, "Left")
         turtle.onkey(self.move_right_player, "Right")
         turtle.onkey(self.cheat_upgrade, "p")
+        turtle.onkey(self.auto_shoot,"o")
         turtle.onkey(self.fire_bullet, "space")
         turtle.listen()
-
+        counter = 0
         self.game_state = "running"
+
         while "running":
+            counter += 1
+            if counter>=self.stop_timer:
+                counter=0
+                self.spawn_new_enemy_row()
             if not self.player_hp > 0 or self.num_enemies <= 0:
                 self.game_state = "finished"
                 print("the Game Ended")
+            temp = -1
             for i in self.enemies:
-                if i[0].isvisible():
+                temp += 1
+                if i[0].isvisible() and self.bullets[0].isvisible:
                     self.minion_perform_action(i)
-                    for j in self.bullets:
-                        #   If one of the bullets have hit the target
-                        if self.hit_target(argBullet=j,argEnemy=i[0]):
-                            j.hideturtle()
-                            i[0].hideturtle()
-                            # Update the score
-                            self.score += (i[1]*10)
-                            scorestring = "Score: %s" % self.score
-                            self.score_pen.clear()
-                            self.score_pen.write(scorestring, False, align="left", font=("Arial", 14, "normal"))
+                    if self.hit_target(argEnemy=i[0], argBullet=self.bullets[0] ):
+                        i[0].hideturtle()
+                        # Update the score
+                        self.score += (i[1] * 10)
+                        scorestring = "Score: %s" % self.score
+                        self.score_pen.clear()
+                        self.score_pen.write(scorestring, False, align="left", font=("Arial", 14, "normal"))
+                        if self.score % 250 == 0:
+                            self.upgrade_player()
 
-                if self.bullet_state == "fire":
-                    for i in self.bullets:
-                        new_y = i.ycor()
-                        new_y += self.bullet_speed
-                        i.sety(new_y)
 
+
+            if self.bullet_state == "fire":
                 for i in self.bullets:
-                    if i.ycor() > 290:
-                        self.arrange_bullets()
+                    new_y = i.ycor()
+                    new_y += self.bullet_speed
+                    i.sety(new_y)
+
+
+            if self.bullets[0].ycor() > 290:
+
+                self.arrange_bullets()
+                self.bullet_state = "ready"
 
 
         turtle.mainloop()
