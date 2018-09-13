@@ -48,4 +48,4 @@ def lvq(protos, data, learningRate = 0.002):
    if nearestCluster == -1:
       except "invalid cluster allocation in LVQ.."
    protos[nearestCluster] += learningRate * data
-   return protos
+   return protos, nearestCluster
