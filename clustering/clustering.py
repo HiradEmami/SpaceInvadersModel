@@ -35,3 +35,17 @@ def kmeans(data, k, nIters):
       nMembers = np.zeros((k, dims), dtype = float)
    return protos
 
+def lvq(protos, data, learningRate = 0.002):
+   k = len(protos)
+   dims = len(protos[0])
+   minDist = 99999999
+   nearestCluster = -1
+   for cluster in range(k):
+      dist = distance(protos[cluster], data)
+      if dist < minDist:
+         minDist = dist
+         nearestCluster = cluster
+   if nearestCluster == -1:
+      except "invalid cluster allocation in LVQ.."
+   protos[nearestCluster] += learningRate * data
+   return protos
