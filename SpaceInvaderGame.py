@@ -338,7 +338,7 @@ class Game:
         #   First create the Window
         self.main_frame = turtle.Screen()
         self.main_frame.bgcolor(self.background_color)
-        self.main_frame.bgpic("spaceShip/backGround.gif")
+        self.main_frame.bgpic("spaceShip/new_backGround.gif")
         self.main_frame.title('Evil Geometry Invaders')
         self.main_frame.setup(width=1.0, height=1.0, startx=None, starty=None)
         #   Draw the Boarders
