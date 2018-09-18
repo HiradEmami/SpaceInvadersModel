@@ -91,6 +91,9 @@ class game:
     def set_pause_duration(self,duration_seconds):
         self.pause_duration_second = duration_seconds
 
+    def set_stage_difficulty_level(self):
+        print("to be implemented")
+
     def set_tial_difficulty(self):
         # add the most basic enemy type to the dictionary
         self.enemy_dic = [{"color": "blue", "shape": "circle", "moveset": 1}]
