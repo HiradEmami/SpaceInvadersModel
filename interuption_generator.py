@@ -1,5 +1,6 @@
 from tkinter import *
 import random as rd
+__author__ = 'Hirad Emami Alagha - s3218139'
 #   Question Format = (a,b,operation)
 class interuption():
     def __init__(self,argQuestions):
@@ -134,7 +135,7 @@ class interuption():
 
 def generate_question():
     operations = ["addition","multiplication","subtraction","division"]
-    selected = operations[rd.randint(0,len(operations))]
+    selected = operations[rd.randint(0,len(operations)-1)]
     if selected == "division":
         found = False
         while not found:
