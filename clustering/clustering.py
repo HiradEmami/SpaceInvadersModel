@@ -58,4 +58,4 @@ if __name__ == "__main__":
   for idx in range(2000):
     pupil = np.random.randint(0,1200,(1,1))
     protos, nearest = lvq(protos, pupil[0])
-    print nearest
+    print pupil, nearest
