@@ -34,6 +34,8 @@ def kmeans(data, k, nIters):
       protos = protos2.copy()
       protos2 = np.zeros((k, dims), dtype = float)
       nMembers = np.zeros((k, dims), dtype = float)
+      
+   
    return protos
 
 def lvq(protos, data, learningRate = 0.002):
@@ -48,14 +50,20 @@ def lvq(protos, data, learningRate = 0.002):
          nearestCluster = cluster
    if nearestCluster == -1:
       raise "invalid cluster allocation in LVQ.."
-   protos[nearestCluster] += learningRate * data
+   protos[nearestCluster] += learningRate * (data - protos[nearestCluster])
    return protos, nearestCluster
  
 if __name__ == "__main__":
   randomStuff = np.random.randint(0,1200, (2000, 1))
   
   protos = kmeans(randomStuff, 2, 20)
+  if protos[0] > protos[1]:
+    buff =  protos[0].copy()
+    protos[0] = protos[1].copy()
+    protos[1] = buff
+    
+  print protos 
   for idx in range(2000):
     pupil = np.random.randint(0,1200,(1,1))
     protos, nearest = lvq(protos, pupil[0])
-    print pupil, nearest
+    print protos, pupil, nearest
