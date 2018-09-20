@@ -154,4 +154,5 @@ def generate_question():
 
 dummy_questions = [generate_question(),generate_question(),generate_question()]
 v = interuption(argQuestions=dummy_questions)
-v.ask_question_()
+result_of_test =v.ask_question_()
+print(result_of_test)
