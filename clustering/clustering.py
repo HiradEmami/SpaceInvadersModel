@@ -8,12 +8,13 @@ def distance(a, b):
 def kmeans(data, k, nIters):
    nData = len(data)
    dims = len(data[0])
-   data = np.random.shuffle(data)
+   np.random.shuffle(data)
    protos = np.zeros((k, dims), dtype = float)
    protos2 = np.zeros((k, dims), dtype = float)
    nMembers = np.zeros((k, dims), dtype = float)
+   
    for proto in range(k):
-      protos[k] = data[k]
+      protos[proto] = data[proto]
    
    for epoch in range(nIters):
       for dIdx in range(nData):
@@ -25,7 +26,7 @@ def kmeans(data, k, nIters):
                minDist = dist
                bestCluster = cluster
          if bestCluster == -1:
-            except "Invalid cluster allocation"
+            raise "Invalid cluster allocation"
          protos2[bestCluster] += data[dIdx]
          nMembers[bestCluster] += 1
       for cluster in range(k):
@@ -46,6 +47,15 @@ def lvq(protos, data, learningRate = 0.002):
          minDist = dist
          nearestCluster = cluster
    if nearestCluster == -1:
-      except "invalid cluster allocation in LVQ.."
+      raise "invalid cluster allocation in LVQ.."
    protos[nearestCluster] += learningRate * data
    return protos, nearestCluster
+ 
+if __name__ == "__main__":
+  randomStuff = np.random.randint(0,1200, (2000, 1))
+  
+  protos = kmeans(randomStuff, 2, 20)
+  for idx in range(2000):
+    pupil = np.random.randint(0,1200,(1,1))
+    protos, nearest = lvq(protos, pupil[0])
+    print nearest
