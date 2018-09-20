@@ -15,7 +15,7 @@ __author__ = 'Hirad Emami Alagha - s3218139'
 #TODO: Loading Blocks
 #TODO: Leaderboard
 
-class game:
+class invaderGame:
     def __init__(self, argTrial=False):
         # Primary vars
         self.main_frame = None
@@ -590,5 +590,5 @@ class game:
         return counter
 
 if __name__ == '__main__':
-    game = game()
+    game = invaderGame()
     game.run()
