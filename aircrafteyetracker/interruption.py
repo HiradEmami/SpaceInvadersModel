@@ -134,7 +134,7 @@ class Interruption:
 				self.first = False
 			if time.time() < (self.first_time + 1.5):
 				self.window.screen.fill(self.draw.blue)
-				text = "Incorrect answer, score -500. Score: " + str(int(self.fixed_score-150))
+				text = "Incorrect answer, score -400. Score: " + str(int(self.fixed_score-150))
 				width,height = self.draw.pg.font.SysFont("Arial", 20).size(text)
 				rtext = self.draw.pg.font.SysFont("Arial", 20).render(text, 1, (200, 200, 255))
 				self.window.screen.blit(rtext, ((self.window.res_x/2)-(width/2),self.window.res_y/2-15))

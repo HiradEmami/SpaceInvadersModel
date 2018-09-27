@@ -113,6 +113,7 @@ class Game:
 			pg.display.update()
 			self.clock.tick(int(self.rate_limiter))
 			cur_score = score.Score().calc(self.planes_landed,self.planes_dead + self.planes_lost,self.interruption.probs_solved,self.interruption.probs_failed,self.game_time,start_score)
+		self.logger.log("Planes landed: %s, planes lost/crashed: %s, successful interruptions: %s, failed interruptions: %s" %(self.planes_landed,self.planes_dead + self.planes_lost,self.interruption.probs_solved,self.interruption.probs_failed))
 		return cur_score,self.baseline
 
 

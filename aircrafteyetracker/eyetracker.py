@@ -32,6 +32,7 @@ class Eyetracker:
 		self.pcps_list = []
 		# self.last_live_avg_time = 0
 		self.threshold = 0.997
+		# threshold volgens eerder onderzoek 0.997!
 		self.interruption_criterion = 2 # mean number of interruptions during a trial
 
 	def initialize(self):
@@ -51,7 +52,7 @@ class Eyetracker:
 		pylink.openGraphics()
 
 		#Opens the EDF file.
-		edfFileName = "mar_" + str(self.pnr) + ".edf"
+		edfFileName = "ced_" + str(self.pnr) + ".edf"
 		# edfFileName = "mar1.edf";
 		getEYELINK().openDataFile(edfFileName)
 
@@ -165,9 +166,9 @@ class Eyetracker:
 		else: return False
 
 		pcps = self.get_pcps()
-		# print("%s: live_avg: %s" %(time.time(),live_avg))
-		# print("%s: self.wiv: %s" %(time.time(),self.wiv))
-		# print("%s: pcps: %s" %(time.time(),pcps))
+		getEYELINK().sendMessage("%s: live_avg: %s" %(time.time(),live_avg))
+		getEYELINK().sendMessage("%s: self.wiv: %s" %(time.time(),self.wiv))
+		getEYELINK().sendMessage("%s: pcps: %s" %(time.time(),pcps))
   
 		if (pcps is not None) and (pcps < self.wiv): # this is a low workload moment
 			if not self.low_wl: # if the previous moment was no low workload moment
@@ -207,8 +208,11 @@ class Eyetracker:
 
 		# return live_avg if available
 		while len(self.pcps_list) < 840:
-			self.pcps_list.append(self.baseline)
+			self.pcps_list.append(self.pcps)
 		else:
+			#f = open('pcps_list', 'a')
+			#s = str(self.pcps_list)
+			#f.write(s)
 			self.live_avg = sum(self.pcps_list) / float(len(self.pcps_list))
 			return self.live_avg
 
@@ -224,7 +228,6 @@ class Eyetracker:
 
 	def adapt_threshold(self,nr_of_interruptions,super_trial_size):
 		# Adapt the threshold proportionally to the deviation of the number of interruptions
-
 		mean_nr_of_interruptions = float(nr_of_interruptions)/float(super_trial_size) # mean nr of interruptions per trial
 		normal = 2 # Ideally the mean nr of interruptions per trial is 2
 		scaling_factor = -0.001

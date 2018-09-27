@@ -8,7 +8,7 @@ class Score:
 		self.points_landed = 100
 		self.points_lost = -150
 		self.points_correct = 100
-		self.points_incorrect = -500
+		self.points_incorrect = -400
 		# self.second_point = 0.1
 	
  
