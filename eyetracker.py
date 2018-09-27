@@ -1,6 +1,7 @@
 from pylink import *
 import gc
 import os
+import pygame as pg
 import sys
 import random
 import numpy as np
