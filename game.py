@@ -31,7 +31,7 @@ class invaderGame:
         self.player_speed = 15 # Relatively fast
         self.minion_speed_x = 2 # Relatively slow
         self.minion_speed_y = 2
-        self.bullet_speed = 50
+        self.bullet_speed = 20
         self.minion_shape_size_x = 1
         self.minion_shape_size_y = 1
         # difficulty
@@ -43,7 +43,7 @@ class invaderGame:
         self.spawn_timer *= 1/self.frame_rate
         # player info
         self.num_bullets = 5
-        self.player_hp = 5
+        self.player_hp = 9
         self.health_turtules = []
         self.hit_threshold = 35
         self.auto_shoot = False
@@ -102,19 +102,19 @@ class invaderGame:
             self.minion_shape_size_y = 2
         elif self.trial_difficulty == "Medium":
             self.enemy_dic.append({"color": "yellow", "shape": "square", "moveset": 2})
-            self.minion_speed_x += 5
-            self.minion_speed_y += 5
+            self.minion_speed_x += 7
+            self.minion_speed_y += 7
             self.minion_shape_size_x = 1.5
             self.minion_shape_size_y = 1.5
-            self.num_batch += 3
+            self.num_batch += 5
         elif self.trial_difficulty == "Hard":
             self.enemy_dic.append({"color": "yellow", "shape": "square", "moveset": 2})
             self.enemy_dic.append({"color": "red", "shape": "triangle", "moveset": 3})
-            self.minion_speed_x += 12
-            self.minion_speed_y += 12
+            self.minion_speed_x = 30
+            self.minion_speed_y = 30
             self.minion_shape_size_x = 1
             self.minion_shape_size_y = 1
-            self.num_batch += 3
+            self.num_batch = 18
 
 
 
@@ -222,7 +222,7 @@ class invaderGame:
 
     def upgrade_gun(self):
         self.bullet_speed += 1
-        self.hit_threshold += 25
+        self.hit_threshold += 15
         new_bullet = self.create_bullet()
         self.bullets.append(new_bullet)
         self.arrange_bullets()
@@ -490,7 +490,7 @@ class invaderGame:
             self.update_status_view()
             print("Game Paused")
 
-    def run(self):
+    def create_main_frame(self):
         #   First create the Window
         self.main_frame = turtle.Screen()
         self.main_frame.bgcolor(self.background_color)
@@ -527,19 +527,6 @@ class invaderGame:
         spawn_counter = 0
         self.game_state = "running"
         self.main_frame.update()
-        while self.game_state=="running":
-            if not self.pause:
-                spawn_counter += 1
-                spawn_counter = self.performe_one_move_cycle(spawn_counter)
-                time.sleep(self.frame_rate)
-                self.main_frame.update()
-            else:
-                time.sleep(self.pause_duration_second)
-                print("Resumed")
-                self.after_pause_time = time.time()
-                self.listen_for_action = True
-                self.pause = False
-                self.update_status_view()
 
            #self.main_frame.delay(15)
            #self.main_frame.update()
@@ -591,4 +578,20 @@ class invaderGame:
 
 if __name__ == '__main__':
     game = invaderGame()
-    game.run()
+    game.create_main_frame()
+    spawn_counter = 0
+    game.game_state = "running"
+    game.main_frame.update()
+    while game.game_state == "running":
+        if not game.pause:
+            spawn_counter += 1
+            spawn_counter = game.performe_one_move_cycle(spawn_counter)
+            time.sleep(game.frame_rate)
+            game.main_frame.update()
+        else:
+            time.sleep(game.pause_duration_second)
+            print("Resumed")
+            game.after_pause_time = time.time()
+            game.listen_for_action = True
+            game.pause = False
+            game.update_status_view()

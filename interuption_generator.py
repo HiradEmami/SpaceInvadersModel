@@ -1,5 +1,7 @@
 from tkinter import *
 import random as rd
+
+
 __author__ = 'Hirad Emami Alagha - s3218139'
 #   Question Format = (a,b,operation)
 class interuption():
@@ -19,6 +21,11 @@ class interuption():
         self.third_Question = False
         # Questions
         self.questions = argQuestions
+        # Evaluation
+        self.evaluation = None
+        self.evaluation_master = None
+
+
 
     def find_answer(self,a,b,operation):
         if operation == "addition":
@@ -86,8 +93,48 @@ class interuption():
     def finish_question(self):
         if self.third_Question:
             self.root.quit()
+            self.ask_evaluation()
         else:
             print("Not Completed")
+
+    def happy_button(self):
+        self.evaluation = 'happy'
+        self.evaluation_master.quit()
+
+    def sad_button(self):
+        self.evaluation = 'sad'
+        self.evaluation_master.quit()
+
+    def angry_button(self):
+        self.evaluation = 'angry'
+        self.evaluation_master.quit()
+
+    def ask_evaluation(self):
+        self.evaluation_master = Tk()
+        self.evaluation_master.title('Evaluation')
+        self.evaluation_master.geometry("200x200")  # You want the size of the app to be 500x500
+        self.evaluation_master.resizable(0, 0)
+
+        self.photo_a = PhotoImage(file="spaceShip/happy.gif",master=self.evaluation_master)
+        self.photo_b = PhotoImage(file="spaceShip/sad.gif",master=self.evaluation_master)
+        self.photo_c = PhotoImage(file="spaceShip/angry.gif",master=self.evaluation_master)
+
+        a = Button(self.evaluation_master,image=self.photo_a, text="it was fine!", command=self.happy_button,
+                   height=50,width=150, compound=LEFT)
+        b = Button(self.evaluation_master, image=self.photo_b,text="didn't like it!", command=self.sad_button,
+                   height=50, width=150, compound=LEFT)
+        c = Button(self.evaluation_master, image=self.photo_c,text="Made me angry!", command=self.angry_button,
+                   height=50, width=150, compound=LEFT)
+
+        w = Label(self.evaluation_master, text="How was the interruption? ")
+
+        w.pack()
+        a.pack()
+        b.pack()
+        c.pack()
+
+        mainloop()
+
 
 
     def ask_question_(self):
@@ -130,7 +177,7 @@ class interuption():
         self.complete_button.pack()
         self.root.mainloop()
 
-        return True
+        return self.evaluation ,self.root ,self.evaluation_master
 
 
 def generate_question():
@@ -151,8 +198,8 @@ def generate_question():
 
 
 
-
-dummy_questions = [generate_question(),generate_question(),generate_question()]
-v = interuption(argQuestions=dummy_questions)
-result_of_test =v.ask_question_()
-print(result_of_test)
+if __name__ == "__main__":
+    dummy_questions = [generate_question(),generate_question(),generate_question()]
+    v = interuption(argQuestions=dummy_questions)
+    result_of_test =v.ask_question_()
+    print(result_of_test)
