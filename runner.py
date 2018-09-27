@@ -2,7 +2,8 @@
 import os,time
 from game import *
 from interuption_generator import *
-
+from eyetracker import Eyetracker
+from clustering import Classifier
 # Main Directories
 DIFFICULTY_FOLDER = "difficulty_blocks"
 PRIMARY_FOLDER = "system_info/"
@@ -54,6 +55,8 @@ def interrupt_user():
     return result_of_test
 
 if __name__ == "__main__":
+    eyeTracker = Eyetracker(1)
+    eyeTracker.start()
     create_essentials()
     game = invaderGame()
     game.create_main_frame()
@@ -65,6 +68,7 @@ if __name__ == "__main__":
     # the main while loop
     while game.game_state == "running":
         #
+        print eyeTracker.get_live_avg()
         interrupt = False
 
         # run_one_game_cycle performance one cycle during which it checks the state of the game
