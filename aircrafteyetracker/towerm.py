@@ -46,15 +46,15 @@ class Towerm:
 		# Initiate and start 3 practice trials with 2 planes
 		self.condition = "practice"
 		trial_nr = -1
-		nr_of_practice_trials = 1
+		nr_of_practice_trials = 6
 
 		while trial_nr >= -nr_of_practice_trials:
-			# if (trial_nr == -1) or (trial_nr == -2):
-			# 	self.condition = "practice_no"
-			# if (trial_nr == -3) or (trial_nr == -4):
-			# 	self.condition = "practice_yes"
-			# if (trial_nr == -5) or (trial_nr == -6):
-			# 	self.condition = "practice"
+			if (trial_nr == -1) or (trial_nr == -2):
+				self.condition = "practice_no"
+			if (trial_nr == -3) or (trial_nr == -4):
+				self.condition = "practice_yes"
+			if (trial_nr == -5) or (trial_nr == -6):
+				self.condition = "practice"
 			self.condition = "practice"
 			practice_trial = self.Trial(trial_nr,self.window,self.map,self.draw,self.pginput,self.logger,self.interruption,3,self.condition,self.eyetracker)
 
@@ -90,7 +90,9 @@ class Towerm:
 		# 	block_condition_order_list = ["control","random","eyetracker"]
 		# else:
 			# block_condition_order_list = ["eyetracker","random","control"]
-		block_condition_order_list = ["eyetracker","random","control"] # TODO: remove
+		#block_condition_order_list = ["eyetracker","random","control"] # TODO: remove
+		block_condition_order_list = ["eyetracker","eyetracker","eyetracker","eyetracker","eyetracker","random","random","random","random","random","control","control","control","control","control"]
+		random.shuffle(block_condition_order_list)
 		first_condition = block_condition_order_list[0]
 		self.logger.log("Condition order: %s" %block_condition_order_list)
 
@@ -101,7 +103,10 @@ class Towerm:
 		for b in block_condition_order_list:
 			block = self.Block(block_nr,self.SuperTrial,self.Trial,self.window,self.map,self.draw,self.pginput,self.logger,self.interruption,b,self.block_size,super_trial_size,self.eyetracker,self.baseline)
 			block_nr += 1
-			waiting = True
+			self.logger.log("current block nr: %s" %block_nr)
+			if ((block_nr == 2) or (block_nr == 6) or (block_nr == 11)):
+				waiting = True
+				self.logger.log("Paused at block nr: %s" %block_nr)
 			while waiting:
 				events,keyinput = self.pginput.get_input(self.eyetracker)
 				if not keyinput[pg.K_SPACE]:
@@ -111,8 +116,8 @@ class Towerm:
 					self.logger.log("SPACE was pressed, break ended")
 					self.logger.log("Drift correction starts now")
 					waiting = False
+					self.eyetracker.drift_correct()
 			
-			self.eyetracker.drift_correct()
 			block.run()		
 			# print(block.condition)
 
@@ -147,6 +152,8 @@ class Towerm:
 			self.logger.log("Block %s started" %self.nr)
 			interruptions_at_start = self.interruption.get_nr_of_interruptions()
 			
+			self.logger.log("Current block condition: %s" %self.condition)
+			
 			if self.condition == "eyetracker":
 				self.eyetracker.start()
 			
@@ -175,13 +182,13 @@ class Towerm:
 
 
 			# Determine the order of hard (5 planes) and easy (2 planes) trials of this block
-			trial_difficulty_order = [6] * int(int(super_trial_size)/2) + [3] * int(int(super_trial_size)/2)
-			random.shuffle(trial_difficulty_order)
+			trial_difficulty_order = [3] * int(int(super_trial_size)/2) + [6] * int(int(super_trial_size)/2)
+			#random.shuffle(trial_difficulty_order)
 			self.trials = []
 			trial_nr = 1
 			for t in trial_difficulty_order:
 				# print("Test Super trial constructor")
-				# print("trial_difficulty_order: %s, super_trial_size: %s" %(trial_difficulty_order,super_trial_size))
+				# self.logger.log("trial_difficulty_order: %s, super_trial_size: %s" %(trial_difficulty_order,super_trial_size))
 				self.trials.append(Trial(trial_nr,window,the_map,draw,pginput,logger,interruption,t,condition,eyetracker))
 				trial_nr += 1
 
@@ -205,6 +212,8 @@ class Towerm:
 			self.logger.log("End score of this super trial: %s" %score)
 			interruptions = self.interruption.get_nr_of_interruptions() - interruptions_at_start
 			self.logger.log("Nr of interruptions of this super trial: %s" %interruptions)
+			
+			
 			if self.condition == "eyetracker":
 				adapted,threshold = self.eyetracker.adapt_threshold(interruptions,self.super_trial_size)
 				self.logger.log("Threshold adapted by %s, new threshold: %s" %(adapted,threshold))
@@ -221,6 +230,7 @@ class Towerm:
 			# 	practice_trial = True
 			self.game = game.Game(window,the_map,d,pginput,logger,interruption,nr_of_planes,condition,time.time(),eyetracker,nr,draw)
 			self.logger = logger
+			# self.logger.log("Kom ik hier? Trial")
 			self.eyetracker = eyetracker
 
 		def run(self,start_score,baseline):
