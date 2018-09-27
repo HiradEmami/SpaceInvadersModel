@@ -2,14 +2,14 @@ from pylink import *
 import gc
 import os
 import sys
-import pygame as pg
 import random
 import numpy as np
 import time
 import Queue
 
 class Eyetracker:
-	def __init__(self,pnr):
+	def __init__(self,pnr, winSize = 600):
+		self.winSize = winSize
 		self.pnr = pnr
 		# self.simulation = False
 		self.initialize()
@@ -61,8 +61,8 @@ class Eyetracker:
 
 		#Gets the display surface and sends a message to EDF file;
 		surf = pg.display.get_surface()
-		getEYELINK().sendCommand("screen_pixel_coords =  0 0 %d %d" %(surf.get_rect().w, surf.get_rect().h))
-		getEYELINK().sendMessage("DISPLAY_COORDS  0 0 %d %d" %(surf.get_rect().w, surf.get_rect().h))
+		getEYELINK().sendCommand("screen_pixel_coords =  0 0 %d %d" %(self.winSize, self.winSize))
+		getEYELINK().sendMessage("DISPLAY_COORDS  0 0 %d %d" %(self.winSize, self.winSize))
 
 		tracker_software_ver = 0
 		eyelink_ver = getEYELINK().getTrackerVersion()
@@ -116,7 +116,7 @@ class Eyetracker:
 			# Does drift correction and handles the re-do camera setup situations
 			try:
 				# print("Drift correction target at: " + str(surf.get_rect().w/2,surf.get_rect().h/2))
-				error = getEYELINK().doDriftCorrect(surf.get_rect().w/2,surf.get_rect().h/2,1,1)
+				error = getEYELINK().doDriftCorrect(self.winSize / 2,self.winSize /2,1,1)
 				if error != 27:
 					break
 				else:
@@ -257,6 +257,9 @@ class Eyetracker:
         #     #        error_message="An unhandled exception occurred on the ioHub Server Process.",
         #     #        method="EyeTracker.sendMessage", message_contents=message_contents,time_offset=time_offset, error=e) 
 
+	def disableGraphics(self):
+		pylink.closeGraphics()
+		pg.display.quit()
 	def exit(self):
 		getEYELINK().stopRecording();
 		# #some pylink stuff

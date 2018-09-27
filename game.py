@@ -4,8 +4,8 @@ import os
 import random as rd
 import math
 import time
-import tkinter as tk
-from tkinter import messagebox
+import Tkinter as tk
+import tkMessageBox as messagebox
 
 
 
@@ -512,8 +512,8 @@ class invaderGame:
         self.bullets.append(bullet)
         self.arrange_bullets()
         #   Setting the Controls
-        turtle.onkeypress(self.move_left_player,"a")
-        turtle.onkeypress(self.move_right_player, "d")
+        #turtle.onkeypress(self.move_left_player,"a")
+        #turtle.onkeypress(self.move_right_player, "d")
         turtle.onkey(self.move_left_player, "Left")
         turtle.onkey(self.move_right_player, "Right")
         turtle.onkey(self.fire_bullet, "space")
