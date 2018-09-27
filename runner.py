@@ -57,6 +57,7 @@ def interrupt_user():
 if __name__ == "__main__":
     eyeTracker = Eyetracker(1)
     eyeTracker.start()
+    eyeTracker.disableGraphics()
     create_essentials()
     game = invaderGame()
     game.create_main_frame()
@@ -68,7 +69,7 @@ if __name__ == "__main__":
     # the main while loop
     while game.game_state == "running":
         #
-        print eyeTracker.get_live_avg()
+        print eyeTracker.get_dilation()
         interrupt = False
 
         # run_one_game_cycle performance one cycle during which it checks the state of the game
