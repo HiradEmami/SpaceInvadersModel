@@ -37,8 +37,8 @@ class Eyetracker:
 		self.interruption_criterion = 2 # mean number of interruptions during a trial
 
 	def initialize(self):
-		spath = os.path.dirname(sys.argv[0])
-		if len(spath) !=0: os.chdir(spath)
+		#spath = os.path.dirname(sys.argv[0])
+		#if len(spath) !=0: os.chdir(spath)
 
 		# if self.simulation:
 		# 	eyelinktracker = EyeLink(None)
@@ -98,7 +98,7 @@ class Eyetracker:
 		getEYELINK().sendCommand("button_function 5 'accept_target_fixation'");
 
 		pylink.setCalibrationColors( (255, 255, 255), (0, 0, 0));  	#Sets the calibration target and background color
-		pylink.setTargetSize(int(surf.get_rect().w/70), int(surf.get_rect().w/300));	#select best size for calibration target
+		pylink.setTargetSize(int(self.winSize /70), int(self.winSize/300));	#select best size for calibration target
 		pylink.setCalibrationSounds("", "", "");
 		pylink.setDriftCorrectSounds("", "off", "off");
 

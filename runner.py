@@ -4,6 +4,7 @@ from game import *
 from interuption_generator import *
 from eyetracker import Eyetracker
 from clustering import Classifier
+import numpy as np
 # Main Directories
 DIFFICULTY_FOLDER = "difficulty_blocks"
 PRIMARY_FOLDER = "system_info/"
@@ -55,6 +56,9 @@ def interrupt_user():
     return result_of_test
 
 if __name__ == "__main__":
+    initData = np.loadtxt('logdata.csv', delimiter = ',')
+    classifier = Classifier(initData)
+    logData = []
     eyeTracker = Eyetracker(1)
     eyeTracker.start()
     eyeTracker.disableGraphics()
@@ -69,7 +73,13 @@ if __name__ == "__main__":
     # the main while loop
     while game.game_state == "running":
         #
-        print eyeTracker.get_dilation()
+        dilation = eyeTracker.get_dilation()
+        try:
+           label, mean = classifier.update(dilation)
+           logData.append((label, classifier.protos[0], classifier.protos[1]))
+        except:
+           print 'exeption thrown'
+        #logData.append(dilation)
         interrupt = False
 
         # run_one_game_cycle performance one cycle during which it checks the state of the game
@@ -79,7 +89,7 @@ if __name__ == "__main__":
         # the evaluation , during which a set of questions are asked and the state is evaluated before resuming the
         # game.
         game, spawn_counter = run_one_game_cycle(game=game, spawn_counter=spawn_counter,interrupt=interrupt )
-
+    np.savetxt("logdata.csv", logData, delimiter=',')
 
 
 
