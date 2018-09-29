@@ -78,7 +78,7 @@ if __name__ == "__main__":
            label, mean = classifier.update(dilation)
            logData.append((label, classifier.protos[0], classifier.protos[1]))
         except:
-           print 'exeption thrown'
+           print ('exeption thrown')
         #logData.append(dilation)
         interrupt = False
 
