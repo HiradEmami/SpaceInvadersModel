@@ -57,7 +57,7 @@ class invaderGame:
         self.health_turtules = []
         self.hit_threshold = 15
         self.auto_shoot = False
-        self.upgrade_point_required = 2000
+        self.upgrade_point_required = 1000
         self.upgade_cycle_point = self.upgrade_point_required
         self.upgrade_allowed = True
         # Player Score
@@ -317,7 +317,7 @@ class invaderGame:
             self.current_gun_mode +=1
             self.set_player_ship()
             self.upgrade_gun()
-            self.upgrade_point_required += 1000 + ((self.current_gun_mode+1)*250)
+            self.upgrade_point_required += 1250
             print ("Required points for the next upgrade is: "+str(self.upgrade_point_required))
         if len(self.bullets) == 5:
             self.upgrade_allowed = False
