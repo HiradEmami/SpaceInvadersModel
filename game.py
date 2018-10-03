@@ -163,6 +163,9 @@ class invaderGame:
             self.next_stage_cut_sceen(argInit=False, argEndGame=True)
             self.game_state = "finished"
 
+    def get_current_stage_difficulty(self):
+        return SCENARIO[self.game_current_stage]
+
     def set_tial_difficulty(self):
         # add the most basic enemy type to the dictionary
         self.enemy_dic = [{"color": "blue", "shape": "circle", "moveset": 1}]
