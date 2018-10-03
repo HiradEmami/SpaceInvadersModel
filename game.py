@@ -22,6 +22,7 @@ BULLET_RESTRICTION = True # RESTRICTING THE BULLET HIT
 TRIAL_STAGE_DURATION = 1 # in minutes
 TEST_STAGE_DURATION = 2 # in minutes
 SCENARIO = ["Easy","Easy","Easy","Hard","Hard","Hard","Hard","Medium","Medium"]
+INTERRUPTION_SCENARIO = ["Control","Control","Control","Random","Random","Random","IMS","IMS","IMS"]
 TRIAL = True # only used for this script, if set to true it will start a trial uppon running
 
 class invaderGame:
@@ -74,7 +75,8 @@ class invaderGame:
         self.first_action_time = None
         self.listen_for_action = False
         self.response_recordings = []
-
+        self.interruption_current_stage = 0
+        self.interruption_state = "Control"
         # Gun configuration
         self.gun_modes = ["xs","s","m","l","xl"]
         self.current_gun_mode = 0
@@ -156,8 +158,10 @@ class invaderGame:
     def progress_test_stage_difficulty(self):
         if self.game_current_stage < len(SCENARIO):
             self.set_stage_difficulty_level(SCENARIO[self.game_current_stage])
+            self.interruption_state = INTERRUPTION_SCENARIO[self.interruption_current_stage]
             self.next_stage_cut_sceen(argInit=False)
             self.game_current_stage += 1
+            self.interruption_current_stage += 1
             self.update_status_view()
         else:
             self.next_stage_cut_sceen(argInit=False, argEndGame=True)
@@ -165,6 +169,7 @@ class invaderGame:
 
     def get_current_stage_difficulty(self):
         return SCENARIO[self.game_current_stage]
+
 
     def set_tial_difficulty(self):
         # add the most basic enemy type to the dictionary

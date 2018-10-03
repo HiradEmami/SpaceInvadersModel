@@ -81,9 +81,7 @@ if __name__ == "__main__":
            print ('exeption thrown')
         #logData.append(dilation)
         interrupt = False
-        s = rd.uniform(0,1)
-        if s < 0.11:
-            interrupt = True
+
         # run_one_game_cycle performance one cycle during which it checks the state of the game
         # if the state is running, the game is on the focus and is being played by the user
         # if the state is paused the game is halted for 5 seconds.
