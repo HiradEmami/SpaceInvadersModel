@@ -1,5 +1,6 @@
 # Required Imports
 import os,time
+import random
 from game import *
 from interuption_generator import *
 from eyetracker import Eyetracker
@@ -70,6 +71,8 @@ if __name__ == "__main__":
     spawn_counter = 0   # Spawn counter is used for the game to count the enemies
     game.game_state = "running" # running would start the game
     game.main_frame.update()    # Initial update of the main frame of the game, starts the game window
+    min_interrupt_time = 25   #minimum # of seconds between interruptions
+
     # the main while loop
     while game.game_state == "running":
         #
@@ -81,6 +84,17 @@ if __name__ == "__main__":
            print ('exeption thrown')
         #logData.append(dilation)
         interrupt = False
+
+		#get the current workload and check if the workload is low
+        workload, listlength = classifier.getResult()
+        try:
+           if (self.workload <= (1/self.listlength)) and (game.interruption_state == "IMS") and (time.time() >= (game.after_pause_time + self.min_interrupt_time)):
+              print ('Good moment for interruption')
+              self.interrupt = True
+           elif (game.interruption_state == "Random") and (time.time() >= (game.after_pause_time + self.min_interrupt_time + random.randint(-10,10))):
+              self.interrupt = True
+        except:
+           print ('exception interrupt detection')
 
         # run_one_game_cycle performance one cycle during which it checks the state of the game
         # if the state is running, the game is on the focus and is being played by the user
