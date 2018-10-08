@@ -12,6 +12,7 @@ import numpy as np
 DIFFICULTY_FOLDER = "difficulty_blocks"
 PRIMARY_FOLDER = "system_info/"
 
+Interruption_timmer = 0
 
 evaluation_list = []
 
@@ -58,6 +59,7 @@ def interrupt_user():
     questions = [generate_question(), generate_question(), generate_question()]
     v = interuption(argQuestions=questions)
     result_of_test = v.ask_question_()
+    Interruption_timmer = time.time()
     #return  result_of_test
     return result_of_test
 
@@ -93,7 +95,8 @@ def run_trial():
 
 
 
-	
+
+
 def run_condition(classifier):
     game = invaderGame(False)
     game.create_main_frame()
@@ -104,6 +107,9 @@ def run_condition(classifier):
     min_interrupt_time = 25   #minimum # of seconds between interruptions
     logData = []
 
+    Interruption_timmer = time.time()
+    interruption_allowed = False
+
     # the main while loop
     while game.game_state == "running":
         dilation = eyeTracker.get_dilation()
@@ -113,7 +119,16 @@ def run_condition(classifier):
            sum, N = classifier.getResult()
            print sum, N
         #logData.append(dilation)
+
+        # Setting the interruption to false by default
         interrupt = False
+
+        #the timer for interruption
+        current_time = time.time()
+
+        if current_time - Interruption_timmer > 30:
+            interruption_allowed = True
+
 
         #get the current workload and check if the workload is low
         workload, listlength = classifier.getResult()
