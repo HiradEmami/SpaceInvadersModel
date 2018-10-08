@@ -19,10 +19,10 @@ __author__ = 'Hirad Emami Alagha - s3218139'
 # Global #
 PLAYER_HP = 9
 BULLET_RESTRICTION = True # RESTRICTING THE BULLET HIT
-TRIAL_STAGE_DURATION = 1 # in minutes
+TRIAL_STAGE_DURATION = 0.1 # in minutes
 TEST_STAGE_DURATION = 2 # in minutes
-SCENARIO = ["Easy","Easy","Easy","Hard","Hard","Hard","Hard","Medium","Medium"]
-INTERRUPTION_SCENARIO = ["Control","Control","Control","Random","Random","Random","IMS","IMS","IMS"]
+SCENARIO = ["Hard","Easy","Easy","Hard","Hard","Hard","Hard","Medium","Medium"]
+INTERRUPTION_SCENARIO = ["Random","Control","Control","Random","Random","Random","IMS","IMS","IMS"]
 TRIAL = True # only used for this script, if set to true it will start a trial uppon running
 
 class invaderGame:
@@ -119,10 +119,10 @@ class invaderGame:
 
     def set_stage_difficulty_level(self,difficulty):
         # add the most basic enemy type to the dictionary
-        self.enemy_dic = [{"color": "blue", "shape": "circle", "moveset": 1}]
+        self.enemy_dic = [{"color": "yellow", "shape": "circle", "moveset": 1, "boarder_color": "orange"}]
         if difficulty == "Easy":
-            self.minion_shape_size_x = 1.5
-            self.minion_shape_size_y = 1.5
+            self.minion_shape_size_x = 2.0
+            self.minion_shape_size_y = 2.0
             self.minion_speed_x = rd.randint(2,4)
             self.minion_speed_y = rd.randint(2,4)
             self.num_batch = rd.randint(3,6)
@@ -130,26 +130,27 @@ class invaderGame:
             self.stage_duration = TEST_STAGE_DURATION * 60  # seconds
             self.set_stage_spawn_number()
         elif difficulty == "Medium":
-            self.enemy_dic.append({"color": "yellow", "shape": "square", "moveset": 2})
+            self.enemy_dic.append({"color": "darkgray", "shape": "square", "moveset": 2, "boarder_color": "yellow"})
             self.minion_speed_x = rd.randint(3,8)
             self.minion_speed_y = rd.randint(3,8)
-            self.minion_shape_size_x = 1.25
-            self.minion_shape_size_y = 1.25
+            self.minion_shape_size_x = 1.5
+            self.minion_shape_size_y = 1.5
             self.num_batch = rd.randint(5,8)
             self.hit_threshold = 20
             self.stage_duration = TEST_STAGE_DURATION * 60  # seconds
             self.set_stage_spawn_number()
+            print (self.stage_spawn_number)
         elif difficulty == "Hard":
-            self.enemy_dic.append({"color": "yellow", "shape": "square", "moveset": 2})
-            self.enemy_dic.append({"color": "red", "shape": "triangle", "moveset": 3})
-            self.minion_speed_x = rd.randint(9,12)
-            self.minion_speed_y = rd.randint(9,12)
-            self.minion_shape_size_x = 1
-            self.minion_shape_size_y = 1
+            self.enemy_dic.append({"color": "black", "shape": "triangle", "moveset": 3, "boarder_color": "red"})
+            self.minion_speed_x = rd.randint(6,8)
+            self.minion_speed_y = rd.randint(9,10)
+            self.minion_shape_size_x = 1.25
+            self.minion_shape_size_y = 1.25
             self.hit_threshold = 25
-            self.num_batch = rd.randint(10,13)
+            self.num_batch = rd.randint(9,11)
             self.stage_duration = TEST_STAGE_DURATION * 60  # seconds
             self.set_stage_spawn_number()
+            print (self.stage_spawn_number)
 
         if self.player_hp < self.max_player_hp:
             self.player_hp +=1
@@ -173,48 +174,59 @@ class invaderGame:
 
     def set_tial_difficulty(self):
         # add the most basic enemy type to the dictionary
-        self.enemy_dic = [{"color": "blue", "shape": "circle", "moveset": 1}]
+        self.enemy_dic = []
         if self.trial_difficulty == "Easy":
-            self.minion_shape_size_x = 1.5
-            self.minion_shape_size_y = 1.5
+            self.enemy_dic.append({"color": "yellow", "shape": "circle", "moveset": 1,"boarder_color":"orange"})
+            print ("Trial level Easy Initialized!")
+            self.minion_shape_size_x = 2
+            self.minion_shape_size_y = 2
             self.num_batch = 3
             self.stage_duration = TRIAL_STAGE_DURATION * 60 # seconds
             self.set_stage_spawn_number()
         elif self.trial_difficulty == "Medium":
-            self.enemy_dic.append({"color": "yellow", "shape": "square", "moveset": 2})
+            print ("Trial level Medium Initialized!")
+            self.enemy_dic.append({"color": "darkgray", "shape": "square", "moveset": 2,"boarder_color":"yellow"})
             self.minion_speed_x += 3
             self.minion_speed_y += 3
-            self.minion_shape_size_x = 1.25
-            self.minion_shape_size_y = 1.25
+            self.minion_shape_size_x = 1.5
+            self.minion_shape_size_y = 1.5
             self.num_batch = 5
             self.stage_duration = TRIAL_STAGE_DURATION * 60  # seconds
             self.set_stage_spawn_number()
         elif self.trial_difficulty == "Hard":
-            self.enemy_dic.append({"color": "yellow", "shape": "square", "moveset": 2})
-            self.enemy_dic.append({"color": "red", "shape": "triangle", "moveset": 3})
-            self.minion_speed_x = 10
+            print ("Trial level Hard Initialized!")
+            self.enemy_dic.append({"color": "black", "shape": "triangle", "moveset": 3,"boarder_color":"red"})
+            self.minion_speed_x = 6
             self.minion_speed_y = 10
-            self.minion_shape_size_x = 1
-            self.minion_shape_size_y = 1
-            self.num_batch = 18
+            self.minion_shape_size_x = 1.25
+            self.minion_shape_size_y = 1.25
+            self.num_batch = 10
             self.stage_duration = TRIAL_STAGE_DURATION * 60  # seconds
             self.set_stage_spawn_number()
 
 
     def progress_trial_difficulty(self):
         if self.trial_difficulty == "Easy":
+            print ("Player progressed trial to Medium!")
             self.trial_difficulty = "Medium"
             self.set_tial_difficulty()
             self.next_stage_cut_sceen(argInit=False)
             self.upgrade_player()
+            self.spawn_new_enemy_row()
+            print ("spwn counter " + str(self.stage_spawn_number))
         elif self.trial_difficulty == "Medium":
+            print ("Player progressed trial to Hard!")
             self.trial_difficulty = "Hard"
             self.set_tial_difficulty()
             self.next_stage_cut_sceen(argInit=False)
             self.upgrade_player()
+            self.spawn_new_enemy_row()
+            print ("spwn counter "+str(self.stage_spawn_number))
         else:
             self.next_stage_cut_sceen(argInit=False,argEndGame=True)
             self.game_state = "finished"
+            
+            
 
 
     def quit_game(self):
@@ -223,6 +235,7 @@ class invaderGame:
             print
             self.game_state = "finished"
             print("The game has ended")
+            self.__del__()
         else:
             print("I'm Not Done Yet")
 
@@ -378,7 +391,7 @@ class invaderGame:
             i.showturtle()
 
     def hit_target(self,argBullet, argEnemy):
-        distance = self.euclidean_distance(self.player.xcor(),argEnemy.xcor(),
+        distance = self.euclidean_distance(argBullet.xcor(),argEnemy.xcor(),
                                            argBullet.ycor(),argEnemy.ycor())
         if distance < self.hit_threshold:
             return True
@@ -601,10 +614,11 @@ class invaderGame:
     def generate_minion(self):
         selection = rd.randint(0,len(self.enemy_dic)-1)
         color = self.enemy_dic[selection].get("color")
+        boarder_color = self.enemy_dic[selection].get("boarder_color")
         shape = self.enemy_dic[selection].get("shape")
         move_pattern = self.enemy_dic[selection].get("moveset")
         minion = turtle.Turtle()
-        minion.color(color)
+        minion.color(boarder_color,color)
         minion.shape(shape)
         minion.shapesize(self.minion_shape_size_x ,self.minion_shape_size_y)
         minion.penup()
@@ -634,6 +648,9 @@ class invaderGame:
             self.pause = True
             self.update_status_view()
             print("Game Paused")
+			
+    def __del__(self):
+        self.main_frame.bye()
 
     def create_main_frame(self):
         #   First create the Window
@@ -699,6 +716,7 @@ class invaderGame:
                         self.progress_trial_difficulty()
                     else:
                         self.progress_test_stage_difficulty()
+
             # if the timer was up and we haven't spawned enough enemies for the difficulty , then spawn new enemies
             else:
                 counter = 0
@@ -751,6 +769,27 @@ class invaderGame:
 
 if __name__ == '__main__':
     game = invaderGame(argTrial=TRIAL)
+    game.create_main_frame()
+    spawn_counter = 0
+    game.game_state = "running"
+    game.main_frame.update()
+    while game.game_state == "running":
+        if not game.pause:
+            spawn_counter += 1
+            spawn_counter = game.performe_one_move_cycle(spawn_counter)
+            time.sleep(game.frame_rate)
+            game.main_frame.update()
+        else:
+            time.sleep(game.pause_duration_second)
+            print("Resumed")
+            game.after_pause_time = time.time()
+            game.listen_for_action = True
+            game.pause = False
+            game.update_status_view()
+
+    game.__del__()
+
+    game = invaderGame(argTrial=False)
     game.create_main_frame()
     spawn_counter = 0
     game.game_state = "running"
