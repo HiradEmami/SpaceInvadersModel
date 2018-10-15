@@ -12,7 +12,9 @@ import numpy as np
 DIFFICULTY_FOLDER = "difficulty_blocks"
 PRIMARY_FOLDER = "system_info/"
 
+min_duration_between_interruption = 30 #seconds
 Interruption_timmer = 0
+interruption_allowed = False
 
 evaluation_list = []
 
@@ -60,6 +62,7 @@ def interrupt_user():
     v = interuption(argQuestions=questions)
     result_of_test = v.ask_question_()
     Interruption_timmer = time.time()
+    interruption_allowed = False
     #return  result_of_test
     return result_of_test
 
@@ -126,9 +129,10 @@ def run_condition(classifier):
         #the timer for interruption
         current_time = time.time()
 
-        if current_time - Interruption_timmer > 30:
+        if current_time - Interruption_timmer > min_duration_between_interruption:
             interruption_allowed = True
-
+        else:
+            interruption_allowed = False
 
         #get the current workload and check if the workload is low
         workload, listlength = classifier.getResult()
@@ -162,6 +166,8 @@ if __name__ == "__main__":
     print(len(initData))
     classifier = Classifier(initData)
     game = run_condition(classifier)
+
+    #the final stuffs for response time and the list for evaluation of the interruption
     response_list = game.response_recordings
     game.__del__()
     print ("response times",response_list)

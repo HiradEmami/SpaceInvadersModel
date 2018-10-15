@@ -19,8 +19,8 @@ __author__ = 'Hirad Emami Alagha - s3218139'
 # Global #
 PLAYER_HP = 9
 BULLET_RESTRICTION = True # RESTRICTING THE BULLET HIT
-TRIAL_STAGE_DURATION = 0.1 # in minutes
-TEST_STAGE_DURATION = 2 # in minutes
+TRIAL_STAGE_DURATION = 1 # in minutes
+TEST_STAGE_DURATION = 0.1 # in minutes
 SCENARIO = ["Hard","Easy","Easy","Hard","Hard","Hard","Hard","Medium","Medium"]
 INTERRUPTION_SCENARIO = ["Random","Control","Control","Random","Random","Random","IMS","IMS","IMS"]
 TRIAL = True # only used for this script, if set to true it will start a trial uppon running
@@ -119,8 +119,9 @@ class invaderGame:
 
     def set_stage_difficulty_level(self,difficulty):
         # add the most basic enemy type to the dictionary
-        self.enemy_dic = [{"color": "yellow", "shape": "circle", "moveset": 1, "boarder_color": "orange"}]
+        self.enemy_dic = []
         if difficulty == "Easy":
+            self.enemy_dic.append({"color": "yellow", "shape": "circle", "moveset": 1, "boarder_color": "orange"})
             self.minion_shape_size_x = 2.0
             self.minion_shape_size_y = 2.0
             self.minion_speed_x = rd.randint(2,4)
@@ -160,10 +161,12 @@ class invaderGame:
         if self.game_current_stage < len(SCENARIO):
             self.set_stage_difficulty_level(SCENARIO[self.game_current_stage])
             self.interruption_state = INTERRUPTION_SCENARIO[self.interruption_current_stage]
+            print ("Current difficulty: " + SCENARIO[self.game_current_stage])
             self.next_stage_cut_sceen(argInit=False)
             self.game_current_stage += 1
             self.interruption_current_stage += 1
             self.update_status_view()
+            print ("Current Interruption: "+ self.interruption_state)
         else:
             self.next_stage_cut_sceen(argInit=False, argEndGame=True)
             self.game_state = "finished"
@@ -768,7 +771,7 @@ class invaderGame:
         return counter
 
 if __name__ == '__main__':
-    game = invaderGame(argTrial=TRIAL)
+    game = invaderGame(argTrial=True)
     game.create_main_frame()
     spawn_counter = 0
     game.game_state = "running"
