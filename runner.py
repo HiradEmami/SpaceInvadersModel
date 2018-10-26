@@ -6,11 +6,12 @@ from interuption_generator import *
 from eyetracker import Eyetracker
 from clustering import Classifier
 import numpy as np
+import sys
+
 
 
 # Main Directories
-DIFFICULTY_FOLDER = "difficulty_blocks"
-PRIMARY_FOLDER = "system_info/"
+PRIMARY_FOLDER = "Final_result_spaceInvader/"
 
 min_duration_between_interruption = 30 #seconds
 Interruption_timmer = 0
@@ -18,7 +19,7 @@ interruption_allowed = False
 
 evaluation_list = []
 
-def create_essentials():
+def create_essentials(partName):
     # if the primary path of blocks does not exist create a new folder
     if not os.path.exists(PRIMARY_FOLDER):
         print("creating The primary folder under " + PRIMARY_FOLDER)
@@ -26,15 +27,15 @@ def create_essentials():
         print(" The Folder for all saved information is created! \n The directory is : " + PRIMARY_FOLDER)
     else:
         print("Creating new Save File!")
-
-    if not os.path.exists(PRIMARY_FOLDER + DIFFICULTY_FOLDER):
-        print("creating The difficulty folder under " + PRIMARY_FOLDER + DIFFICULTY_FOLDER)
-        os.makedirs(PRIMARY_FOLDER + DIFFICULTY_FOLDER)
+    partName=str(partName)+"/"
+    if not os.path.exists(PRIMARY_FOLDER + partName):
+        print("creating The difficulty folder under " + PRIMARY_FOLDER + partName)
+        os.makedirs(PRIMARY_FOLDER + partName)
         print(" The Folder for all saved difficulties is created! \n The directory is : "
-              + PRIMARY_FOLDER + DIFFICULTY_FOLDER)
+              + PRIMARY_FOLDER + partName)
     else:
         print("Creating new Save File!")
-
+    return  PRIMARY_FOLDER + partName
 def run_one_game_cycle(game,spawn_counter,interrupt = False):
     if not game.pause and not interrupt:
         spawn_counter += 1
@@ -46,7 +47,8 @@ def run_one_game_cycle(game,spawn_counter,interrupt = False):
             evaluation, root, evaluation_master = interrupt_user()
             root.destroy()
             evaluation_master.destroy()
-            evaluation_list.append(evaluation)
+            evaluation_list.append([evaluation,game.get_current_stage_difficulty(), game.interruption_state])
+            print(game.get_current_stage_difficulty(), game.interruption_state)
             game.listen_for_action = True
         else:
          time.sleep(game.pause_duration_second)
@@ -58,6 +60,8 @@ def run_one_game_cycle(game,spawn_counter,interrupt = False):
     return game,spawn_counter
 
 def interrupt_user():
+    global Interruption_timmer
+    global interruption_allowed
     questions = [generate_question(), generate_question(), generate_question()]
     v = interuption(argQuestions=questions)
     result_of_test = v.ask_question_()
@@ -101,13 +105,15 @@ def run_trial():
 
 
 def run_condition(classifier):
+    global Interruption_timmer
+    global interruption_allowed
+
     game = invaderGame(False)
     game.create_main_frame()
     # Primary while loop of the application
     spawn_counter = 0   # Spawn counter is used for the game to count the enemies
     game.game_state = "running" # running would start the game
     game.main_frame.update()    # Initial update of the main frame of the game, starts the game window
-    min_interrupt_time = 25   #minimum # of seconds between interruptions
     logData = []
 
     Interruption_timmer = time.time()
@@ -128,19 +134,22 @@ def run_condition(classifier):
 
         #the timer for interruption
         current_time = time.time()
-
-        if current_time - Interruption_timmer > min_duration_between_interruption:
+        if current_time - (Interruption_timmer) > min_duration_between_interruption:
             interruption_allowed = True
+            print(Interruption_timmer)
+
         else:
             interruption_allowed = False
 
         #get the current workload and check if the workload is low
         workload, listlength = classifier.getResult()
         try:
-           if (workload <= (1/listlength)) and (game.interruption_state == "IMS") and (time.time() >= (game.after_pause_time + min_interrupt_time)):
+           # if random.randint(0,100) < 5:
+           #     interrupt = True
+           if (workload <= (1/listlength)) and (game.interruption_state == "IMS") and interruption_allowed == True:
               print ('Good moment for interruption')
               interrupt = True
-           elif (game.interruption_state == "Random") and (time.time() >= (game.after_pause_time + min_interrupt_time + random.randint(-10,10))):
+           elif (game.interruption_state == "Random")and interruption_allowed == True:
               interrupt = True
         except:
            print ('exception interrupt detection')
@@ -152,25 +161,30 @@ def run_condition(classifier):
         # the evaluation , during which a set of questions are asked and the state is evaluated before resuming the
         # game.
         game, spawn_counter = run_one_game_cycle(game=game, spawn_counter=spawn_counter,interrupt=interrupt )
-    np.savetxt("logData.csv", logData, fmt = '%s')
-    return game
+        interrupt = False
+
+    return game, logData
 if __name__ == "__main__":
-   
+    Participant_name= sys.argv[1]
+    result_folder= create_essentials(partName=Participant_name)
     eyeTracker = Eyetracker(1)
     eyeTracker.start()
     eyeTracker.disableGraphics()
-    create_essentials()
+
 	
     initData = run_trial()
-    np.savetxt('initData.csv', initData, fmt = '%s')
+    np.savetxt(result_folder+'initData.csv', initData, fmt = '%s')
     print(len(initData))
     classifier = Classifier(initData)
-    game = run_condition(classifier)
+    game,logData = run_condition(classifier)
 
+    np.savetxt(result_folder + "logData.csv", logData, fmt='%s')
     #the final stuffs for response time and the list for evaluation of the interruption
     response_list = game.response_recordings
     game.__del__()
     print ("response times",response_list)
+    np.savetxt(result_folder+'responseList.csv', response_list, fmt = '%s')
+    np.savetxt( result_folder+ 'evaluationList.csv', evaluation_list, fmt = '%s')
     print ("evaluations",evaluation_list)
 
 

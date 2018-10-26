@@ -19,10 +19,11 @@ __author__ = 'Hirad Emami Alagha - s3218139'
 # Global #
 PLAYER_HP = 9
 BULLET_RESTRICTION = True # RESTRICTING THE BULLET HIT
-TRIAL_STAGE_DURATION = 1 # in minutes
-TEST_STAGE_DURATION = 0.1 # in minutes
-SCENARIO = ["Hard","Easy","Easy","Hard","Hard","Hard","Hard","Medium","Medium"]
-INTERRUPTION_SCENARIO = ["Random","Control","Control","Random","Random","Random","IMS","IMS","IMS"]
+TRIAL_STAGE_DURATION = 0.125 # in minutes
+TEST_STAGE_DURATION = 0.5 # in minutes
+SCENARIO = ["Easy","Medium","Hard","Easy","Hard","Medium","Hard"]
+INTERRUPTION_SCENARIO = ["Random","IMS","Control","IMS","Random","Random","IMS"]
+
 TRIAL = True # only used for this script, if set to true it will start a trial uppon running
 
 class invaderGame:
@@ -126,7 +127,7 @@ class invaderGame:
             self.minion_shape_size_y = 2.0
             self.minion_speed_x = rd.randint(2,4)
             self.minion_speed_y = rd.randint(2,4)
-            self.num_batch = rd.randint(3,6)
+            self.num_batch = 3
             self.hit_threshold = 15
             self.stage_duration = TEST_STAGE_DURATION * 60  # seconds
             self.set_stage_spawn_number()
@@ -136,7 +137,7 @@ class invaderGame:
             self.minion_speed_y = rd.randint(3,8)
             self.minion_shape_size_x = 1.5
             self.minion_shape_size_y = 1.5
-            self.num_batch = rd.randint(5,8)
+            self.num_batch = 4
             self.hit_threshold = 20
             self.stage_duration = TEST_STAGE_DURATION * 60  # seconds
             self.set_stage_spawn_number()
@@ -148,7 +149,7 @@ class invaderGame:
             self.minion_shape_size_x = 1.25
             self.minion_shape_size_y = 1.25
             self.hit_threshold = 25
-            self.num_batch = rd.randint(9,11)
+            self.num_batch = 5
             self.stage_duration = TEST_STAGE_DURATION * 60  # seconds
             self.set_stage_spawn_number()
             print (self.stage_spawn_number)
@@ -172,7 +173,10 @@ class invaderGame:
             self.game_state = "finished"
 
     def get_current_stage_difficulty(self):
-        return SCENARIO[self.game_current_stage]
+        if self.game_current_stage < len(SCENARIO):
+            return SCENARIO[self.game_current_stage - 1]
+        else:
+            return SCENARIO[len(SCENARIO)-1]
 
 
     def set_tial_difficulty(self):
@@ -193,7 +197,7 @@ class invaderGame:
             self.minion_speed_y += 3
             self.minion_shape_size_x = 1.5
             self.minion_shape_size_y = 1.5
-            self.num_batch = 5
+            self.num_batch = 4
             self.stage_duration = TRIAL_STAGE_DURATION * 60  # seconds
             self.set_stage_spawn_number()
         elif self.trial_difficulty == "Hard":
@@ -203,7 +207,7 @@ class invaderGame:
             self.minion_speed_y = 10
             self.minion_shape_size_x = 1.25
             self.minion_shape_size_y = 1.25
-            self.num_batch = 10
+            self.num_batch = 5
             self.stage_duration = TRIAL_STAGE_DURATION * 60  # seconds
             self.set_stage_spawn_number()
 
@@ -393,7 +397,7 @@ class invaderGame:
         for i in self.bullets:
             i.showturtle()
 
-    def hit_target(self,argBullet, argEnemy):
+    def hit_target(self,argBullet,argEnemy):
         distance = self.euclidean_distance(argBullet.xcor(),argEnemy.xcor(),
                                            argBullet.ycor(),argEnemy.ycor())
         if distance < self.hit_threshold:
@@ -678,8 +682,8 @@ class invaderGame:
         self.bullets.append(bullet)
         self.arrange_bullets()
         #   Setting the Controls
-        #turtle.onkeypress(self.move_left_player,"a")
-        #turtle.onkeypress(self.move_right_player, "d")
+        turtle.onkey(self.move_left_player,"a")
+        turtle.onkey(self.move_right_player, "d")
         turtle.onkey(self.move_left_player, "Left")
         turtle.onkey(self.move_right_player, "Right")
         turtle.onkey(self.fire_bullet, "space")
@@ -726,15 +730,16 @@ class invaderGame:
                 self.spawn_new_enemy_row()
                 self.stage_spawn_number -= 1
 
-        if not self.player_hp > 0 or self.num_enemies <= 0:
-            self.game_state = "finished"
-            print("the Game Ended")
+        #if not self.player_hp > 0 or self.num_enemies <= 0:
+           # self.game_state = "finished"
+            #print("the Game Ended")
         temp = -1
         for i in self.enemies:
             temp += 1
             if i[0].isvisible() and self.bullets[0].isvisible:
                 self.minion_perform_action(i)
                 minion_y = i[0].ycor()
+
                 if self.hit_target(argEnemy=i[0], argBullet=self.bullets[0]):
                     i[0].hideturtle()
                     if BULLET_RESTRICTION:
