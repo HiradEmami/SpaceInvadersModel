@@ -1,22 +1,22 @@
 In IMS:
-Total Easy: 12 That is 40.00%
-Total Medium: 11 That is 36.67%
-Total Hard: 7 That is 23.33%
+Total Easy: 15 That is 40.54%
+Total Medium: 14 That is 37.84%
+Total Hard: 8 That is 21.62%
 
-Total Happy: 13 That is 48.15%
-Total Sad: 7 That is 25.93%
-Total Angry: 7 That is 25.93%
+Total Happy: 19 That is 51.35%
+Total Sad: 9 That is 24.32%
+Total Angry: 9 That is 24.32%
 
-Average Response Time: 1.26
+Average Response Time: 1.19
 
 In Random:
-Total Easy: 19 That is 42.22%
-Total Medium: 8 That is 17.78%
-Total Hard: 18 That is 40.00%
+Total Easy: 21 That is 41.18%
+Total Medium: 10 That is 19.61%
+Total Hard: 20 That is 39.22%
 
-Total Happy: 15 That is 33.33%
-Total Sad: 15 That is 46.67%
-Total Angry: 9 That is 20.00%
+Total Happy: 19 That is 37.25%
+Total Sad: 19 That is 41.18%
+Total Angry: 11 That is 21.57%
 
-Average Response Time: 1.45
+Average Response Time: 1.36
 
